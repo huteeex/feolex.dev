@@ -1,5 +1,6 @@
 import {
   ArrowRight,
+  Bot,
   Code2,
   Database,
   Languages,
@@ -12,7 +13,8 @@ import {
   Sun,
   Workflow,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { LucideIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 type Lang = "ru" | "en";
 type Theme = "dark" | "light";
@@ -23,167 +25,79 @@ const contacts = {
   email: "mailto:kalashnikov78ru@gmail.com",
 };
 
-const nav = {
-  ru: [
-    ["Главная", "hero"],
-    ["Профиль", "profile"],
-    ["Навыки", "skills"],
-    ["Маршрут", "route"],
-    ["Проекты", "projects"],
-    ["Контакты", "contact"],
-  ],
-  en: [
-    ["Home", "hero"],
-    ["Profile", "profile"],
-    ["Skills", "skills"],
-    ["Route", "route"],
-    ["Work", "projects"],
-    ["Contact", "contact"],
-  ],
-} as const;
-
-const copy = {
+const text = {
   ru: {
-    heroKicker: "Full-stack developer · 3+ года практики · 15+ проектов",
-    heroTitle: "Full-stack под запуск",
+    nav: ["Главная", "Профиль", "Навыки", "Маршрут", "Проекты", "Контакты"],
+    heroTag: "Full-stack developer · 3+ года · 15+ проектов",
+    heroTitle: "Собираю веб-продукты от базы данных до запуска",
     heroLead:
-      "Проектирую и собираю веб-приложения целиком: backend, frontend, базу данных, AI/NLP-логику, админ-панели и инфраструктуру для деплоя.",
-    heroCta: "Показать маршрут проекта",
-    heroNote: "Листайте дальше: на десктопе сайт едет вправо, на телефоне — вниз",
-    stats: [
-      ["3+", "года практической разработки"],
-      ["15+", "проектов и учебных систем"],
-      ["5", "ключевых кейсов в портфолио"],
-      ["Full-cycle", "от схемы БД до запуска"],
+      "React, TypeScript, Python, Django, Node.js, C#, ASP.NET, PostgreSQL, AI/NLP и Docker. Беру идею, раскладываю на архитектуру, интерфейс, данные и понятный план релиза.",
+    heroPrimary: "Посмотреть маршрут",
+    heroSecondary: "Написать в Telegram",
+    profileTitle: "Не просто верстка. Я закрываю продуктовую логику целиком.",
+    profileLead:
+      "Работаю на стыке backend, frontend и данных: авторизация, роли, REST API, админ-панели, real-time сценарии, отчеты, интеграции и деплой. Отдельный фокус — анализ текста и задачи, близкие к антиплагиату.",
+    profilePoints: [
+      "Дипломная работа: платформа проверки схожести материалов внутри групп пользователей.",
+      "Проекты для людей и бизнеса: Nusi Nails, Telegram-боты, магазины, сайты услуг, админ-панели.",
+      "Во время учебы писал курсовые и учебные системы для студентов: БД, CRUD, отчеты, документация и подготовка к защите.",
+      "Умею быстро входить в чужой проект: исправить ошибки, улучшить UX, привести интерфейс и backend к рабочему состоянию.",
     ],
-    profileTitle: "Не джуниорская витрина. Рабочий опыт в продуктах, данных и интерфейсах.",
-    profileText: [
-      "Я full-stack разработчик: работаю с Python, Node.js, TypeScript, React, C#, ASP.NET, Django и PostgreSQL. Собираю системы с авторизацией, ролями, REST API, административными панелями, отчетами, real-time функционалом и нормальной интеграцией frontend с backend.",
-      "Отдельная сильная зона — анализ текста и проверка схожести материалов. Дипломная работа была связана с антиплагиатом: загрузка документов, подготовка текста, сравнение, хранение результатов и работа с группами пользователей.",
-      "Во время учебы делал курсовые и учебные проекты для студентов: базы данных, CRUD-системы, отчеты, автоматизация и документация. Это дало много практики в быстрых задачах, чужих требованиях и доведении проекта до защиты.",
-    ],
-    servicesTitle: "Что я закрываю в проекте",
-    servicesLead: "Не просто верстка. Я думаю о данных, сценариях, правах доступа, скорости, поддержке и запуске.",
-    skillsTitle: "Навыки без шума",
-    skillsLead: "Стек подобран не для красивого списка, а для задач: быстро собрать MVP, доработать существующий продукт или усилить backend.",
-    routeTitle: "Project Route Board",
+    skillsTitle: "Стек, который решает задачи",
+    servicesTitle: "Что я могу взять на себя",
+    routeTitle: "Project cockpit: как я веду задачу",
     routeLead:
-      "Вместо странной “фишки” — понятный интерактив: выберите тип задачи, и сайт покажет, как я превращаю ее в рабочий план, стек и первый результат.",
-    projectsTitle: "Пять кейсов из более чем 15 проектов",
+      "Это не декоративная “фишка”, а быстрый способ понять мой рабочий подход. Выберите тип проекта и увидите маршрут: что делаю сначала, какой стек беру и какой результат можно ожидать.",
+    projectsTitle: "5 кейсов из 15+ проектов",
     projectsLead:
-      "Здесь оставлены проекты, которые лучше всего показывают ширину опыта: дипломная NLP-платформа, сервисы для бизнеса, бот, магазин и учебно-коммерческие системы.",
-    contactTitle: "Давайте обсудим задачу",
+      "Оставил проекты, которые лучше показывают ширину опыта: дипломный антиплагиат, сервисы для салона, Telegram-бот, магазин и учебно-коммерческие системы.",
+    contactTitle: "Готов обсудить задачу",
     contactLead:
-      "Напишите, что нужно сделать: MVP, backend, интерфейс, бот, админ-панель, база данных или доработка существующего сайта. Я отвечу по делу и предложу план.",
-    contactCta: "Написать в Telegram",
+      "Напишите, что нужно сделать: MVP, backend, frontend, Telegram-бот, админ-панель, база данных, AI/NLP или доработка существующего сайта. Я отвечу конкретным планом.",
   },
   en: {
-    heroKicker: "Full-stack developer · 3+ years · 15+ projects",
-    heroTitle: "Full-stack built to ship",
+    nav: ["Home", "Profile", "Skills", "Route", "Work", "Contact"],
+    heroTag: "Full-stack developer · 3+ years · 15+ projects",
+    heroTitle: "I build web products from database to launch",
     heroLead:
-      "I design and build complete web products: backend, frontend, databases, AI/NLP logic, admin panels and deployment infrastructure.",
-    heroCta: "Open project route",
-    heroNote: "Scroll to explore: sideways on desktop, vertical on mobile",
-    stats: [
-      ["3+", "years of hands-on development"],
-      ["15+", "projects and academic systems"],
-      ["5", "selected portfolio cases"],
-      ["Full-cycle", "from DB schema to launch"],
+      "React, TypeScript, Python, Django, Node.js, C#, ASP.NET, PostgreSQL, AI/NLP and Docker. I turn an idea into architecture, interface, data model and a release plan.",
+    heroPrimary: "View project route",
+    heroSecondary: "Message on Telegram",
+    profileTitle: "Not just UI. I own the product logic end to end.",
+    profileLead:
+      "I work across backend, frontend and data: auth, roles, REST APIs, admin panels, real-time flows, reports, integrations and deployment. A separate focus is text analysis and anti-plagiarism-style tasks.",
+    profilePoints: [
+      "Diploma project: a platform for checking similarity of materials inside user groups.",
+      "Projects for real people and businesses: Nusi Nails, Telegram bots, stores, service websites and admin panels.",
+      "During university I built coursework systems for students: databases, CRUD, reports, documentation and defense preparation.",
+      "I can enter an existing project quickly: fix bugs, improve UX and bring UI/backend into a working state.",
     ],
-    profileTitle: "Not a junior showcase. Real work across products, data and interfaces.",
-    profileText: [
-      "I am a full-stack developer working with Python, Node.js, TypeScript, React, C#, ASP.NET, Django and PostgreSQL. I build systems with authentication, roles, REST APIs, admin panels, reports, real-time features and clean frontend/backend integration.",
-      "A separate strong area is text analysis and document similarity. My diploma project focused on anti-plagiarism: document upload, text preprocessing, comparison logic, result storage and group-based user workflows.",
-      "During university I also built coursework and educational systems for students: databases, CRUD apps, reports, automation and documentation. That gave me a lot of practice with fast requirements and shipping projects to a defendable state.",
-    ],
-    servicesTitle: "What I can own in a project",
-    servicesLead: "Not just UI. I think about data, user flows, permissions, speed, support and deployment.",
-    skillsTitle: "Skills without noise",
-    skillsLead: "The stack is selected for real tasks: launching an MVP, improving an existing product or strengthening backend architecture.",
-    routeTitle: "Project Route Board",
+    skillsTitle: "Stack that solves tasks",
+    servicesTitle: "What I can own",
+    routeTitle: "Project cockpit: how I run a task",
     routeLead:
-      "A clear interactive board: choose a task type and the site shows how I turn it into a practical plan, stack and first deliverable.",
-    projectsTitle: "Five cases from 15+ projects",
+      "Not a decorative gimmick. This shows my working process. Choose a project type and see the route: what comes first, which stack fits and what result to expect.",
+    projectsTitle: "5 cases from 15+ projects",
     projectsLead:
-      "Selected work that shows the range: an NLP diploma platform, business services, a bot, a store and academic/commercial systems.",
-    contactTitle: "Let’s discuss the project",
+      "Selected cases that show the range: diploma anti-plagiarism, salon services, Telegram bot, store and academic/commercial systems.",
+    contactTitle: "Ready to discuss the task",
     contactLead:
-      "Send me what you need: MVP, backend, UI, bot, admin panel, database or existing site improvement. I will reply with a practical plan.",
-    contactCta: "Message on Telegram",
+      "Send what you need: MVP, backend, frontend, Telegram bot, admin panel, database, AI/NLP or existing site improvements. I will reply with a concrete plan.",
   },
 };
 
-const serviceItems = {
-  ru: [
-    {
-      icon: ServerCog,
-      title: "Backend и API",
-      text: "Django, DRF, Node.js, Express, ASP.NET Core: REST API, роли, JWT, админ-панели, бизнес-логика и интеграции.",
-    },
-    {
-      icon: Code2,
-      title: "Frontend и UX",
-      text: "React, Next.js, TypeScript, Tailwind, Redux Toolkit: интерфейсы, формы, кабинеты, адаптивность и понятные пользовательские сценарии.",
-    },
-    {
-      icon: Database,
-      title: "Данные и PostgreSQL",
-      text: "Схемы БД, связи, SQL, PL/pgSQL, функции, триггеры, фильтрация, отчеты и хранение результатов проверок.",
-    },
-    {
-      icon: Sparkles,
-      title: "AI / NLP",
-      text: "Интеграция LLM API, prompt engineering, обработка текста, нормализация, токенизация и метрики схожести документов.",
-    },
-    {
-      icon: Workflow,
-      title: "Автоматизация",
-      text: "Telegram-боты, внутренние панели, CRUD, desktop-приложения на C#, сценарии для учета, заявок и повторяющихся операций.",
-    },
-    {
-      icon: Rocket,
-      title: "Запуск и DevOps",
-      text: "Docker, Docker Compose, Nginx, Vercel, Railway, Supabase, GitHub: подготовка проекта к реальному размещению.",
-    },
-  ],
-  en: [
-    {
-      icon: ServerCog,
-      title: "Backend and API",
-      text: "Django, DRF, Node.js, Express, ASP.NET Core: REST APIs, roles, JWT, admin panels, business logic and integrations.",
-    },
-    {
-      icon: Code2,
-      title: "Frontend and UX",
-      text: "React, Next.js, TypeScript, Tailwind, Redux Toolkit: interfaces, forms, accounts, responsive layouts and clear flows.",
-    },
-    {
-      icon: Database,
-      title: "Data and PostgreSQL",
-      text: "DB schemas, relations, SQL, PL/pgSQL, functions, triggers, filtering, reports and check-result storage.",
-    },
-    {
-      icon: Sparkles,
-      title: "AI / NLP",
-      text: "LLM API integration, prompt engineering, text preprocessing, normalization, tokenization and document similarity metrics.",
-    },
-    {
-      icon: Workflow,
-      title: "Automation",
-      text: "Telegram bots, internal dashboards, CRUD, C# desktop apps and workflows for inventory, requests and repeated operations.",
-    },
-    {
-      icon: Rocket,
-      title: "Launch and DevOps",
-      text: "Docker, Docker Compose, Nginx, Vercel, Railway, Supabase, GitHub: preparing projects for real deployment.",
-    },
-  ],
-};
+const sections = ["hero", "profile", "skills", "route", "projects", "contact"];
+
+const stats: Array<[string, Record<Lang, string>]> = [
+  ["3+", { ru: "года практической разработки", en: "years of hands-on development" }],
+  ["15+", { ru: "проектов и учебных систем", en: "projects and academic systems" }],
+  ["5", { ru: "ключевых кейсов", en: "selected portfolio cases" }],
+  ["Full-cycle", { ru: "от схемы БД до запуска", en: "from DB schema to launch" }],
+];
 
 const skillGroups = [
   {
-    ruTitle: "Языки",
-    enTitle: "Languages",
+    title: { ru: "Языки", en: "Languages" },
     items: [
       ["Python", "python", "3776AB"],
       ["TypeScript", "typescript", "3178C6"],
@@ -195,8 +109,7 @@ const skillGroups = [
     ],
   },
   {
-    ruTitle: "Frontend",
-    enTitle: "Frontend",
+    title: { ru: "Frontend", en: "Frontend" },
     items: [
       ["React", "react", "61DAFB"],
       ["Next.js", "nextdotjs", "111111"],
@@ -208,8 +121,7 @@ const skillGroups = [
     ],
   },
   {
-    ruTitle: "Backend",
-    enTitle: "Backend",
+    title: { ru: "Backend", en: "Backend" },
     items: [
       ["Django", "django", "092E20"],
       ["DRF", "django", "44B78B"],
@@ -221,8 +133,7 @@ const skillGroups = [
     ],
   },
   {
-    ruTitle: "AI, Data, DevOps",
-    enTitle: "AI, Data, DevOps",
+    title: { ru: "AI, Data, DevOps", en: "AI, Data, DevOps" },
     items: [
       ["OpenAI API", "openai", "111111"],
       ["PostgreSQL", "postgresql", "4169E1"],
@@ -235,153 +146,114 @@ const skillGroups = [
   },
 ];
 
+const services: Record<Lang, Array<[string, string, LucideIcon]>> = {
+  ru: [
+    ["Backend и API", "Django, DRF, Node.js, Express, ASP.NET Core: REST API, роли, JWT, админ-панели, бизнес-логика и интеграции.", ServerCog],
+    ["Frontend и UX", "React, Next.js, TypeScript, Tailwind, Redux Toolkit: интерфейсы, формы, кабинеты, адаптивность и понятные сценарии.", Code2],
+    ["PostgreSQL и данные", "Схемы БД, связи, SQL, PL/pgSQL, функции, триггеры, фильтрация, отчеты и хранение результатов.", Database],
+    ["AI / NLP", "LLM API, prompt engineering, обработка текста, нормализация, токенизация и метрики схожести документов.", Sparkles],
+    ["Боты и автоматизация", "Telegram-боты, внутренние панели, CRUD, C# desktop-приложения и автоматизация ручных операций.", Bot],
+    ["Запуск и поддержка", "Docker, Nginx, Vercel, Railway, Supabase, GitHub: подготовка проекта к размещению и развитию.", Rocket],
+  ],
+  en: [
+    ["Backend and API", "Django, DRF, Node.js, Express, ASP.NET Core: REST APIs, roles, JWT, admin panels, business logic and integrations.", ServerCog],
+    ["Frontend and UX", "React, Next.js, TypeScript, Tailwind, Redux Toolkit: interfaces, forms, accounts, responsive layouts and clear flows.", Code2],
+    ["PostgreSQL and data", "DB schemas, relations, SQL, PL/pgSQL, functions, triggers, filtering, reports and result storage.", Database],
+    ["AI / NLP", "LLM APIs, prompt engineering, text preprocessing, normalization, tokenization and document similarity metrics.", Sparkles],
+    ["Bots and automation", "Telegram bots, internal dashboards, CRUD, C# desktop apps and automation for manual operations.", Bot],
+    ["Launch and support", "Docker, Nginx, Vercel, Railway, Supabase, GitHub: preparing projects for deployment and growth.", Rocket],
+  ],
+};
+
 const routes = {
   ru: [
     {
       key: "mvp",
       label: "MVP / веб-продукт",
-      title: "Быстро собрать рабочую первую версию без хаоса",
-      result: "Архитектура, база данных, API, frontend, деплой и список следующих итераций.",
-      timeline: "2-6 недель",
-      steps: ["собираю требования и риски", "проектирую сущности и роли", "делаю API и UI", "готовлю деплой и документацию"],
+      result: "Архитектура, БД, API, frontend, деплой и список следующих итераций.",
+      stack: ["React", "TypeScript", "Django/Node", "PostgreSQL", "Docker"],
+      steps: ["разбор требований", "модель данных", "API и роли", "интерфейс", "деплой"],
     },
     {
       key: "nlp",
       label: "Антиплагиат / NLP",
-      title: "Сравнение текстов, группы пользователей и понятные результаты",
       result: "Загрузка документов, preprocessing, метрики схожести, история проверок и отчеты.",
-      timeline: "4-8 недель",
-      steps: ["нормализация текста", "токенизация и сравнение", "хранение результатов", "админ-панель и группы"],
+      stack: ["Python", "React", "PostgreSQL", "PL/pgSQL", "Docker"],
+      steps: ["нормализация", "токенизация", "сравнение", "хранение", "отчеты"],
     },
     {
       key: "business",
       label: "Сайт для бизнеса",
-      title: "Сайт, который объясняет услугу и приводит заявки",
       result: "Структура, адаптивный интерфейс, формы, каталог/услуги, SEO-база и подготовка к размещению.",
-      timeline: "1-3 недели",
-      steps: ["аудит сценариев", "структура страниц", "верстка и формы", "оптимизация и запуск"],
+      stack: ["React", "Next.js", "Tailwind", "Forms", "SEO"],
+      steps: ["аудит", "структура", "дизайн", "разработка", "запуск"],
     },
     {
       key: "automation",
       label: "Автоматизация",
-      title: "Убрать ручную работу из заявок, учета и внутренних операций",
       result: "Бот, desktop-приложение, админ-панель или API-интеграция под конкретный процесс.",
-      timeline: "2-5 недель",
-      steps: ["описываю процесс", "делаю модель данных", "автоматизирую сценарии", "добавляю отчеты"],
+      stack: ["Python", "C#", "Telegram API", "SQL", "Git"],
+      steps: ["процесс", "данные", "сценарии", "интеграции", "отчеты"],
     },
   ],
   en: [
     {
       key: "mvp",
       label: "MVP / web product",
-      title: "Build a working first version without chaos",
-      result: "Architecture, database, API, frontend, deployment and a clear next-iteration list.",
-      timeline: "2-6 weeks",
-      steps: ["gather requirements and risks", "design entities and roles", "build API and UI", "prepare deployment and docs"],
+      result: "Architecture, DB, API, frontend, deployment and a next-iteration list.",
+      stack: ["React", "TypeScript", "Django/Node", "PostgreSQL", "Docker"],
+      steps: ["requirements", "data model", "API and roles", "interface", "deploy"],
     },
     {
       key: "nlp",
       label: "Anti-plagiarism / NLP",
-      title: "Text comparison, user groups and clear results",
       result: "Document upload, preprocessing, similarity metrics, check history and reports.",
-      timeline: "4-8 weeks",
-      steps: ["normalize text", "tokenize and compare", "store results", "build admin and groups"],
+      stack: ["Python", "React", "PostgreSQL", "PL/pgSQL", "Docker"],
+      steps: ["normalize", "tokenize", "compare", "store", "report"],
     },
     {
       key: "business",
       label: "Business website",
-      title: "A website that explains the service and brings requests",
-      result: "Structure, responsive UI, forms, catalog/services, SEO base and deployment preparation.",
-      timeline: "1-3 weeks",
-      steps: ["audit user flows", "structure pages", "build UI and forms", "optimize and launch"],
+      result: "Structure, responsive UI, forms, catalog/services, SEO base and launch preparation.",
+      stack: ["React", "Next.js", "Tailwind", "Forms", "SEO"],
+      steps: ["audit", "structure", "design", "build", "launch"],
     },
     {
       key: "automation",
       label: "Automation",
-      title: "Remove manual work from requests, inventory and operations",
-      result: "A bot, desktop app, admin panel or API integration built around the real process.",
-      timeline: "2-5 weeks",
-      steps: ["describe the process", "model the data", "automate scenarios", "add reports"],
+      result: "A bot, desktop app, admin panel or API integration built for the real process.",
+      stack: ["Python", "C#", "Telegram API", "SQL", "Git"],
+      steps: ["process", "data", "scenarios", "integrations", "reports"],
     },
   ],
 };
 
-const projects = {
+const projects: Record<Lang, Array<[string, string, string, string[]]>> = {
   ru: [
-    {
-      title: "Antiplag Platform",
-      label: "дипломная работа · NLP · PostgreSQL",
-      text: "Платформа для обнаружения схожести текстовых работ внутри групп. Реализованы загрузка материалов, обработка текста, сравнение, хранение результатов, пользователи, группы и подготовка к Docker/Nginx запуску.",
-      stack: ["TypeScript", "React", "Vite", "Tailwind", "PostgreSQL", "PL/pgSQL", "Docker", "Nginx"],
-    },
-    {
-      title: "Nusi Nails Website",
-      label: "салон красоты · запись · админ-панель",
-      text: "Full-stack сайт для салона: услуги, мастера, запись на время, регистрация, статусы заявок, клиентская часть и административная панель для управления расписанием.",
-      stack: ["React", "TypeScript", "Node.js", "Django", "PostgreSQL", "REST API", "JWT", "Tailwind"],
-    },
-    {
-      title: "Nusi Nails Telegram Bot",
-      label: "бот · заявки · автоматизация",
-      text: "Telegram-бот для салона: обработка команд, сценарии записи, ответы пользователям, интеграция с backend-логикой и подготовка к автоматизации клиентского общения.",
-      stack: ["Python", "Telegram Bot API", "REST API", "PostgreSQL", "Git"],
-    },
-    {
-      title: "monochromist.ru",
-      label: "магазин одежды · ранний коммерческий проект",
-      text: "Один из первых проектов: сайт магазина на HTML, CSS, PHP и JavaScript. Каталог, базовая логика страниц, правки отображения, адаптация интерфейса и поддержка контента.",
-      stack: ["HTML", "CSS", "JavaScript", "PHP", "SQL"],
-    },
-    {
-      title: "Client & Coursework Systems",
-      label: "15+ проектов · бизнес и учебные задачи",
-      text: "Сайты для малого бизнеса, учебные CRUD-системы, базы данных, отчеты, формы, исправления интерфейса, автоматизация и курсовые проекты с документацией и подготовкой к защите.",
-      stack: ["Python", "C#", "React", "SQL", "PostgreSQL", "Docker", "Git"],
-    },
+    ["Antiplag Platform", "дипломная работа · NLP · PostgreSQL", "Платформа для обнаружения схожести текстовых работ внутри групп: загрузка материалов, обработка текста, сравнение, хранение результатов, пользователи, группы и Docker/Nginx подготовка.", ["TypeScript", "React", "Vite", "PostgreSQL", "PL/pgSQL", "Docker"]],
+    ["Nusi Nails Website", "салон красоты · запись · админ-панель", "Full-stack сайт для салона: услуги, мастера, запись на время, регистрация, статусы заявок, клиентская часть и административная панель расписания.", ["React", "TypeScript", "Django/Node", "PostgreSQL", "REST API", "JWT"]],
+    ["Nusi Nails Telegram Bot", "бот · заявки · автоматизация", "Telegram-бот для салона: обработка команд, сценарии записи, ответы пользователям, интеграция с backend-логикой и автоматизация общения.", ["Python", "Telegram Bot API", "REST API", "PostgreSQL"]],
+    ["monochromist.ru", "магазин одежды · ранний коммерческий проект", "Один из первых проектов: сайт магазина на HTML, CSS, PHP и JavaScript. Каталог, базовая логика страниц, правки отображения и поддержка контента.", ["HTML", "CSS", "JavaScript", "PHP", "SQL"]],
+    ["Client & Coursework Systems", "15+ проектов · бизнес и учебные задачи", "Сайты для малого бизнеса, учебные CRUD-системы, базы данных, отчеты, формы, исправления интерфейса, автоматизация и курсовые с документацией.", ["Python", "C#", "React", "SQL", "PostgreSQL", "Git"]],
   ],
   en: [
-    {
-      title: "Antiplag Platform",
-      label: "diploma project · NLP · PostgreSQL",
-      text: "A platform for detecting similarity between text works inside groups. It includes uploads, text preprocessing, comparison logic, result storage, users, groups and Docker/Nginx launch preparation.",
-      stack: ["TypeScript", "React", "Vite", "Tailwind", "PostgreSQL", "PL/pgSQL", "Docker", "Nginx"],
-    },
-    {
-      title: "Nusi Nails Website",
-      label: "beauty salon · booking · admin panel",
-      text: "A full-stack salon website: services, masters, appointment booking, registration, request statuses, client UI and an admin panel for schedule management.",
-      stack: ["React", "TypeScript", "Node.js", "Django", "PostgreSQL", "REST API", "JWT", "Tailwind"],
-    },
-    {
-      title: "Nusi Nails Telegram Bot",
-      label: "bot · requests · automation",
-      text: "A Telegram bot for the salon: command handling, booking scenarios, user replies, backend logic integration and automation of client communication.",
-      stack: ["Python", "Telegram Bot API", "REST API", "PostgreSQL", "Git"],
-    },
-    {
-      title: "monochromist.ru",
-      label: "clothing store · early commercial project",
-      text: "One of my first commercial projects: a store website built with HTML, CSS, PHP and JavaScript. Catalog, page logic, display fixes, responsive adjustments and content support.",
-      stack: ["HTML", "CSS", "JavaScript", "PHP", "SQL"],
-    },
-    {
-      title: "Client & Coursework Systems",
-      label: "15+ projects · business and academic tasks",
-      text: "Small business websites, educational CRUD systems, databases, reports, forms, UI fixes, automation and coursework projects with documentation and defense preparation.",
-      stack: ["Python", "C#", "React", "SQL", "PostgreSQL", "Docker", "Git"],
-    },
+    ["Antiplag Platform", "diploma project · NLP · PostgreSQL", "A platform for detecting similarity between text works inside groups: uploads, preprocessing, comparison logic, result storage, users, groups and Docker/Nginx preparation.", ["TypeScript", "React", "Vite", "PostgreSQL", "PL/pgSQL", "Docker"]],
+    ["Nusi Nails Website", "beauty salon · booking · admin panel", "A full-stack salon website: services, masters, booking, registration, request statuses, client UI and admin schedule management.", ["React", "TypeScript", "Django/Node", "PostgreSQL", "REST API", "JWT"]],
+    ["Nusi Nails Telegram Bot", "bot · requests · automation", "A Telegram bot for the salon: command handling, booking scenarios, user replies, backend integration and communication automation.", ["Python", "Telegram Bot API", "REST API", "PostgreSQL"]],
+    ["monochromist.ru", "clothing store · early commercial project", "One of my first projects: a store website built with HTML, CSS, PHP and JavaScript. Catalog, page logic, display fixes and content support.", ["HTML", "CSS", "JavaScript", "PHP", "SQL"]],
+    ["Client & Coursework Systems", "15+ projects · business and academic tasks", "Small business websites, educational CRUD systems, databases, reports, forms, UI fixes, automation and coursework with documentation.", ["Python", "C#", "React", "SQL", "PostgreSQL", "Git"]],
   ],
 };
 
-function BrandIcon({ slug, color, label }: { slug: string; color: string; label: string }) {
+function BrandIcon({ label, slug, color }: { label: string; slug: string; color: string }) {
   return (
     <img
       src={`https://cdn.simpleicons.org/${slug}/${color}`}
       alt={label}
-      className="brand-icon"
+      width="20"
+      height="20"
       loading="lazy"
-      width="22"
-      height="22"
+      className="h-5 w-5 rounded bg-white p-0.5"
       onError={(event) => {
         event.currentTarget.style.display = "none";
       }}
@@ -389,303 +261,70 @@ function BrandIcon({ slug, color, label }: { slug: string; color: string; label:
   );
 }
 
-function AppNav({
+function Header({
   lang,
   theme,
   setLang,
   setTheme,
-  scrollToPanel,
 }: {
   lang: Lang;
   theme: Theme;
   setLang: (lang: Lang) => void;
   setTheme: (theme: Theme) => void;
-  scrollToPanel: (id: string) => void;
 }) {
   return (
-    <header className="topbar">
-      <button className="brand-button" type="button" onClick={() => scrollToPanel("hero")}>
-        huteeex.dev
-      </button>
-      <nav className="topbar-links" aria-label={lang === "ru" ? "Навигация по сайту" : "Site navigation"}>
-        {nav[lang].map(([label, id]) => (
-          <button key={id} type="button" onClick={() => scrollToPanel(id)}>
-            {label}
+    <header className="fixed left-3 right-3 top-3 z-50 rounded-[28px] border border-[var(--line)] bg-[color-mix(in_srgb,var(--panel)_82%,transparent)] px-4 py-3 shadow-2xl shadow-black/20 backdrop-blur-xl lg:left-8 lg:right-8">
+      <div className="flex flex-wrap items-center gap-3 lg:flex-nowrap">
+        <a href="#hero" className="mr-auto text-lg font-black tracking-tight text-[var(--text)]">
+          huteeex.dev
+        </a>
+        <nav className="order-3 flex w-full gap-1 overflow-x-auto text-xs font-semibold uppercase tracking-[0.16em] text-[var(--muted)] lg:order-none lg:w-auto lg:gap-2">
+          {sections.map((id, index) => (
+            <a key={id} href={`#${id}`} className="rounded-full px-3 py-2 transition hover:bg-[var(--soft)] hover:text-[var(--text)]">
+              {text[lang].nav[index]}
+            </a>
+          ))}
+        </nav>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--soft)] px-3 text-sm font-semibold text-[var(--text)]"
+            onClick={() => setLang(lang === "ru" ? "en" : "ru")}
+            aria-label="Switch language"
+          >
+            <Languages size={16} />
+            {lang === "ru" ? "EN" : "RU"}
           </button>
-        ))}
-      </nav>
-      <div className="topbar-actions">
-        <button type="button" onClick={() => setLang(lang === "ru" ? "en" : "ru")} aria-label="Switch language">
-          <Languages size={16} />
-          {lang === "ru" ? "EN" : "RU"}
-        </button>
-        <button type="button" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label="Switch theme">
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+          <button
+            type="button"
+            className="grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-[var(--soft)] text-[var(--text)]"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-label="Switch theme"
+          >
+            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+        </div>
       </div>
     </header>
   );
 }
 
-function SideRails({ lang }: { lang: Lang }) {
+function SectionTitle({ kicker, title, lead }: { kicker: string; title: string; lead?: string }) {
   return (
-    <aside className="side-rails" aria-label={lang === "ru" ? "Быстрые контакты" : "Quick contacts"}>
-      <a className="rail rail-blue" href={contacts.github} target="_blank" rel="noreferrer">
-        GitHub
-      </a>
-      <a className="rail rail-violet" href={contacts.telegram} target="_blank" rel="noreferrer">
-        Telegram
-      </a>
-    </aside>
-  );
-}
-
-function PanelTitle({ kicker, title, lead }: { kicker: string; title: string; lead?: string }) {
-  return (
-    <div className="panel-title">
-      <span>{kicker}</span>
-      <h2>{title}</h2>
-      {lead ? <p>{lead}</p> : null}
+    <div className="mb-10 max-w-5xl">
+      <p className="mb-3 font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--orange)]">{kicker}</p>
+      <h2 className="text-balance text-4xl font-black uppercase leading-[0.93] tracking-[-0.055em] text-[var(--text)] sm:text-6xl lg:text-7xl">
+        {title}
+      </h2>
+      {lead ? <p className="mt-5 max-w-3xl text-base leading-8 text-[var(--muted)] sm:text-lg">{lead}</p> : null}
     </div>
-  );
-}
-
-function HeroPanel({ lang, scrollToPanel }: { lang: Lang; scrollToPanel: (id: string) => void }) {
-  const t = copy[lang];
-
-  return (
-    <section id="hero" className="panel hero-panel" aria-label={lang === "ru" ? "Главный экран" : "Hero"}>
-      <div className="hero-layout">
-        <div className="hero-word">
-          <span>{t.heroKicker}</span>
-          <h1>{t.heroTitle}</h1>
-          <p>{t.heroLead}</p>
-          <div className="hero-actions">
-            <button type="button" onClick={() => scrollToPanel("route")}>
-              {t.heroCta}
-              <ArrowRight size={18} />
-            </button>
-            <small>{t.heroNote}</small>
-          </div>
-        </div>
-        <div className="hero-terminal" aria-label="Developer stack terminal">
-          <div className="terminal-top">
-            <i />
-            <i />
-            <i />
-            <strong>launch-plan.ts</strong>
-          </div>
-          <pre>{`type Product = {
-  backend: "Django" | "Node" | "ASP.NET";
-  frontend: "React" | "Next.js";
-  database: "PostgreSQL";
-  extras: ["AI/NLP", "Telegram Bot", "Docker"];
-}
-
-const launch = async (idea: Product) => {
-  await designSchema(idea.database)
-  await shipAPI(idea.backend)
-  await connectUI(idea.frontend)
-  return deploy("Docker + Nginx")
-}`}</pre>
-          <div className="terminal-tags">
-            {["AUTH", "API", "DB", "UI", "NLP", "DEPLOY"].map((tag) => (
-              <span key={tag}>{tag}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="hero-stats" aria-label={lang === "ru" ? "Ключевые показатели" : "Key metrics"}>
-        {t.stats.map(([value, label]) => (
-          <article key={value}>
-            <strong>{value}</strong>
-            <span>{label}</span>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ProfilePanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-
-  return (
-    <section id="profile" className="panel profile-panel">
-      <PanelTitle kicker={lang === "ru" ? "Профиль" : "Profile"} title={t.profileTitle} />
-      <div className="profile-copy">
-        {t.profileText.map((text) => (
-          <p key={text}>{text}</p>
-        ))}
-      </div>
-      <div className="profile-strip">
-        {[
-          ["Backend", "Django · Node.js · ASP.NET"],
-          ["Frontend", "React · Next.js · TypeScript"],
-          ["Data", "PostgreSQL · SQL · PL/pgSQL"],
-          ["AI/NLP", "OpenAI API · Similarity · Text processing"],
-        ].map(([title, text]) => (
-          <article key={title}>
-            <strong>{title}</strong>
-            <span>{text}</span>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function SkillsPanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-
-  return (
-    <section id="skills" className="panel skills-panel">
-      <PanelTitle kicker={lang === "ru" ? "Навыки" : "Skills"} title={t.skillsTitle} lead={t.skillsLead} />
-      <div className="skills-board">
-        {skillGroups.map((group) => (
-          <article className="skill-group" key={group.ruTitle}>
-            <h3>{lang === "ru" ? group.ruTitle : group.enTitle}</h3>
-            <div>
-              {group.items.map(([label, slug, color]) => (
-                <span className="skill-chip" key={`${group.ruTitle}-${label}`}>
-                  <BrandIcon label={label} slug={slug} color={color} />
-                  {label}
-                </span>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ServicesPanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-
-  return (
-    <section id="services" className="panel services-panel">
-      <PanelTitle kicker={lang === "ru" ? "Работа" : "Services"} title={t.servicesTitle} lead={t.servicesLead} />
-      <div className="service-grid">
-        {serviceItems[lang].map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <article className="service-tile" key={item.title}>
-              <div>
-                <Icon size={22} />
-                <span>{String(index + 1).padStart(2, "0")}</span>
-              </div>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function RoutePanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-  const routeList = routes[lang];
-  const [activeKey, setActiveKey] = useState(routeList[0].key);
-  const active = useMemo(() => routeList.find((item) => item.key === activeKey) ?? routeList[0], [activeKey, routeList]);
-
-  useEffect(() => {
-    setActiveKey(routeList[0].key);
-  }, [lang, routeList]);
-
-  return (
-    <section id="route" className="panel route-panel">
-      <PanelTitle kicker={lang === "ru" ? "Фишка, но понятная" : "Interactive board"} title={t.routeTitle} lead={t.routeLead} />
-      <div className="route-board">
-        <div className="route-tabs" role="tablist" aria-label={lang === "ru" ? "Типы задач" : "Task types"}>
-          {routeList.map((item) => (
-            <button
-              type="button"
-              key={item.key}
-              className={active.key === item.key ? "is-active" : ""}
-              onClick={() => setActiveKey(item.key)}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-        <article className="route-card">
-          <span className="route-time">{active.timeline}</span>
-          <h3>{active.title}</h3>
-          <p>{active.result}</p>
-          <ol>
-            {active.steps.map((step) => (
-              <li key={step}>{step}</li>
-            ))}
-          </ol>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-function ProjectsPanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-
-  return (
-    <section id="projects" className="panel projects-panel">
-      <PanelTitle kicker={lang === "ru" ? "Проекты" : "Projects"} title={t.projectsTitle} lead={t.projectsLead} />
-      <div className="project-row">
-        {projects[lang].map((project, index) => (
-          <article className="project-card" key={project.title}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <h3>{project.title}</h3>
-            <small>{project.label}</small>
-            <p>{project.text}</p>
-            <div>
-              {project.stack.map((item) => (
-                <em key={`${project.title}-${item}`}>{item}</em>
-              ))}
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function ContactPanel({ lang }: { lang: Lang }) {
-  const t = copy[lang];
-
-  return (
-    <section id="contact" className="panel contact-panel">
-      <PanelTitle kicker={lang === "ru" ? "Контакты" : "Contact"} title={t.contactTitle} lead={t.contactLead} />
-      <div className="contact-grid">
-        <a href={contacts.telegram} target="_blank" rel="noreferrer">
-          <Send size={24} />
-          <span>Telegram</span>
-          <strong>@huteex</strong>
-        </a>
-        <a href={contacts.github} target="_blank" rel="noreferrer">
-          <BrandIcon label="GitHub" slug="github" color="111111" />
-          <span>GitHub</span>
-          <strong>github.com/huteeex</strong>
-        </a>
-        <a href={contacts.email}>
-          <Mail size={24} />
-          <span>Email</span>
-          <strong>kalashnikov78ru@gmail.com</strong>
-        </a>
-      </div>
-      <a className="final-cta" href={contacts.telegram} target="_blank" rel="noreferrer">
-        {t.contactCta}
-        <ArrowRight size={18} />
-      </a>
-    </section>
   );
 }
 
 export default function App() {
   const [lang, setLang] = useState<Lang>(() => (localStorage.getItem("portfolio-lang") as Lang) || "ru");
   const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem("portfolio-theme") as Theme) || "dark");
-  const deckRef = useRef<HTMLDivElement>(null);
+  const [activeRoute, setActiveRoute] = useState(routes[lang][0].key);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -695,43 +334,217 @@ export default function App() {
   }, [lang, theme]);
 
   useEffect(() => {
-    deckRef.current?.scrollTo({ left: 0 });
-  }, []);
+    setActiveRoute(routes[lang][0].key);
+  }, [lang]);
 
-  const scrollToPanel = (id: string) => {
-    const panel = document.getElementById(id);
-    if (!panel) {
-      return;
-    }
-    if (window.innerWidth >= 960 && deckRef.current) {
-      deckRef.current.scrollTo({ left: panel.offsetLeft, behavior: "smooth" });
-      return;
-    }
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    const deck = deckRef.current;
-    if (!deck || window.innerWidth < 960 || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
-      return;
-    }
-    deck.scrollLeft += event.deltaY;
-    event.preventDefault();
-  };
+  const active = useMemo(() => routes[lang].find((route) => route.key === activeRoute) ?? routes[lang][0], [activeRoute, lang]);
+  const t = text[lang];
 
   return (
-    <>
-      <AppNav lang={lang} theme={theme} setLang={setLang} setTheme={setTheme} scrollToPanel={scrollToPanel} />
-      <SideRails lang={lang} />
-      <main className="deck" ref={deckRef} onWheel={handleWheel}>
-        <HeroPanel lang={lang} scrollToPanel={scrollToPanel} />
-        <ProfilePanel lang={lang} />
-        <SkillsPanel lang={lang} />
-        <ServicesPanel lang={lang} />
-        <RoutePanel lang={lang} />
-        <ProjectsPanel lang={lang} />
-        <ContactPanel lang={lang} />
+    <div className="min-h-screen overflow-x-hidden bg-[var(--bg)] text-[var(--text)]">
+      <Header lang={lang} theme={theme} setLang={setLang} setTheme={setTheme} />
+
+      <main>
+        <section id="hero" className="relative isolate min-h-screen px-4 pb-16 pt-36 sm:px-8 lg:px-12 lg:pt-40">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_80%_15%,var(--glow),transparent_32rem)]" />
+          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.02fr_0.88fr] lg:items-center">
+            <div>
+              <p className="mb-4 font-mono text-xs font-bold uppercase tracking-[0.22em] text-[var(--orange)]">{t.heroTag}</p>
+              <h1 className="text-balance text-5xl font-black uppercase leading-[0.9] tracking-[-0.065em] text-[var(--text)] sm:text-7xl lg:text-8xl">
+                {t.heroTitle}
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--muted)]">{t.heroLead}</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a className="inline-flex min-h-12 items-center gap-3 rounded-full bg-[var(--text)] px-5 font-mono text-sm font-bold uppercase tracking-wide text-[var(--bg)]" href="#route">
+                  {t.heroPrimary}
+                  <ArrowRight size={18} />
+                </a>
+                <a className="inline-flex min-h-12 items-center gap-3 rounded-full border border-[var(--line)] bg-[var(--soft)] px-5 font-mono text-sm font-bold uppercase tracking-wide text-[var(--text)]" href={contacts.telegram} target="_blank" rel="noreferrer">
+                  {t.heroSecondary}
+                  <Send size={18} />
+                </a>
+              </div>
+            </div>
+
+            <div className="rounded-[2rem] border border-[var(--line)] bg-[var(--panel)] p-4 shadow-2xl shadow-black/20 backdrop-blur">
+              <div className="flex items-center gap-2 border-b border-[var(--line)] pb-4 font-mono text-xs text-[var(--muted)]">
+                <span className="h-3 w-3 rounded-full bg-red-500" />
+                <span className="h-3 w-3 rounded-full bg-emerald-400" />
+                <span className="h-3 w-3 rounded-full bg-sky-400" />
+                <span className="ml-auto">launch-map.ts</span>
+              </div>
+              <pre className="overflow-x-auto whitespace-pre-wrap py-6 font-mono text-sm leading-7 text-[var(--code)]">{`const stack = {
+  backend: ["Django", "Node", "ASP.NET"],
+  frontend: ["React", "Next.js", "Tailwind"],
+  data: ["PostgreSQL", "PL/pgSQL"],
+  extras: ["AI/NLP", "Telegram Bot", "Docker"]
+}
+
+ship(product)
+  .designDatabase()
+  .buildAPI()
+  .connectInterface()
+  .deploy()`}</pre>
+              <div className="grid grid-cols-3 gap-2">
+                {["AUTH", "API", "DB", "UI", "NLP", "DEPLOY"].map((item) => (
+                  <span className="rounded-2xl border border-[var(--line)] bg-[var(--soft)] px-3 py-4 text-center font-mono text-xs tracking-[0.18em] text-[var(--muted)]" key={item}>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-10 grid max-w-7xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map(([value, labels]) => (
+              <article className="border border-[var(--line)] bg-[var(--panel)] p-5" key={value}>
+                <strong className="block text-3xl font-black">{value}</strong>
+                <span className="mt-2 block font-mono text-xs uppercase tracking-[0.14em] text-[var(--muted)]">{labels[lang]}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="profile" className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <SectionTitle kicker={lang === "ru" ? "Профиль" : "Profile"} title={t.profileTitle} lead={t.profileLead} />
+            <div className="grid gap-4">
+              {t.profilePoints.map((item, index) => (
+                <article className="flex gap-4 border border-[var(--line)] bg-[var(--panel)] p-5" key={item}>
+                  <span className="font-mono text-sm font-bold text-[var(--accent)]">{String(index + 1).padStart(2, "0")}</span>
+                  <p className="m-0 leading-7 text-[var(--muted)]">{item}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="skills" className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle kicker={lang === "ru" ? "Навыки" : "Skills"} title={t.skillsTitle} />
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {skillGroups.map((group) => (
+                <article className="min-h-72 border border-[var(--line)] bg-[var(--panel)] p-6" key={group.title.ru}>
+                  <h3 className="mb-5 text-2xl font-black">{group.title[lang]}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {group.items.map(([label, slug, color]) => (
+                      <span className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--soft)] px-3 py-2 font-mono text-xs font-semibold text-[var(--text)]" key={`${group.title.ru}-${label}`}>
+                        <BrandIcon label={label} slug={slug} color={color} />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle kicker={lang === "ru" ? "Работа" : "Services"} title={t.servicesTitle} />
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {services[lang].map(([title, body, Icon], index) => (
+                <article className="group min-h-60 border border-[var(--line)] bg-[var(--panel)] p-6 transition hover:-translate-y-1 hover:border-[var(--accent)]" key={title}>
+                  <div className="flex items-center justify-between text-[var(--accent)]">
+                    <Icon size={24} />
+                    <span className="font-mono text-xs text-[var(--muted)]">{String(index + 1).padStart(2, "0")}</span>
+                  </div>
+                  <h3 className="mt-8 text-2xl font-black">{title}</h3>
+                  <p className="mt-4 leading-7 text-[var(--muted)]">{body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="route" className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle kicker={lang === "ru" ? "Интерактив" : "Interactive"} title={t.routeTitle} lead={t.routeLead} />
+            <div className="grid gap-4 border border-[var(--line)] bg-[var(--panel)] p-4 lg:grid-cols-[0.72fr_1.28fr]">
+              <div className="grid content-start gap-2">
+                {routes[lang].map((route) => (
+                  <button
+                    className={`min-h-16 border px-5 text-left font-mono text-sm font-bold uppercase tracking-wide transition ${
+                      active.key === route.key ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text)]" : "border-[var(--line)] bg-[var(--soft)] text-[var(--muted)] hover:text-[var(--text)]"
+                    }`}
+                    type="button"
+                    key={route.key}
+                    onClick={() => setActiveRoute(route.key)}
+                  >
+                    {route.label}
+                  </button>
+                ))}
+              </div>
+              <article className="border border-[var(--line)] bg-[var(--bg)] p-6">
+                <p className="font-mono text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent)]">Route output</p>
+                <h3 className="mt-4 text-3xl font-black uppercase tracking-[-0.04em] sm:text-5xl">{active.result}</h3>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {active.stack.map((item) => (
+                    <span className="rounded-full border border-[var(--line)] bg-[var(--soft)] px-3 py-2 font-mono text-xs font-semibold" key={item}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-6 grid gap-2 sm:grid-cols-5">
+                  {active.steps.map((step, index) => (
+                    <div className="min-h-24 border border-[var(--line)] bg-[var(--panel)] p-4" key={step}>
+                      <span className="font-mono text-xs text-[var(--accent)]">{String(index + 1).padStart(2, "0")}</span>
+                      <p className="mt-2 text-sm font-semibold text-[var(--text)]">{step}</p>
+                    </div>
+                  ))}
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle kicker={lang === "ru" ? "Проекты" : "Work"} title={t.projectsTitle} lead={t.projectsLead} />
+            <div className="grid gap-4 lg:grid-cols-2">
+              {projects[lang].map(([title, label, body, stack], index) => (
+                <article className="border border-[var(--line)] bg-[var(--panel)] p-6" key={title}>
+                  <span className="font-mono text-xs font-bold text-[var(--accent)]">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="mt-5 text-3xl font-black tracking-[-0.04em]">{title}</h3>
+                  <p className="mt-2 font-mono text-xs font-bold uppercase tracking-[0.14em] text-[var(--orange)]">{label}</p>
+                  <p className="mt-5 leading-7 text-[var(--muted)]">{body}</p>
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {stack.map((item) => (
+                      <span className="rounded-full border border-[var(--line)] bg-[var(--soft)] px-3 py-2 font-mono text-xs font-semibold" key={`${title}-${item}`}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" className="px-4 py-20 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            <SectionTitle kicker={lang === "ru" ? "Контакты" : "Contact"} title={t.contactTitle} lead={t.contactLead} />
+            <div className="grid gap-4 md:grid-cols-3">
+              <a className="border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--text)] no-underline transition hover:-translate-y-1 hover:border-[var(--accent)]" href={contacts.telegram} target="_blank" rel="noreferrer">
+                <Send className="text-[var(--accent)]" />
+                <span className="mt-8 block font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Telegram</span>
+                <strong className="mt-2 block text-xl">@huteex</strong>
+              </a>
+              <a className="border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--text)] no-underline transition hover:-translate-y-1 hover:border-[var(--accent)]" href={contacts.github} target="_blank" rel="noreferrer">
+                <Workflow className="text-[var(--accent)]" />
+                <span className="mt-8 block font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)]">GitHub</span>
+                <strong className="mt-2 block break-words text-xl">github.com/huteeex</strong>
+              </a>
+              <a className="border border-[var(--line)] bg-[var(--panel)] p-6 text-[var(--text)] no-underline transition hover:-translate-y-1 hover:border-[var(--accent)]" href={contacts.email}>
+                <Mail className="text-[var(--accent)]" />
+                <span className="mt-8 block font-mono text-xs uppercase tracking-[0.16em] text-[var(--muted)]">Email</span>
+                <strong className="mt-2 block break-words text-xl">kalashnikov78ru@gmail.com</strong>
+              </a>
+            </div>
+          </div>
+        </section>
       </main>
-    </>
+    </div>
   );
 }
